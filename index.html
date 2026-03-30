@@ -520,6 +520,32 @@ section { padding: 120px 5%; }
 }
 .contact-form input:focus { border-color: var(--coral); }
 .contact-form input::placeholder { color: var(--gray); }
+.contact-form button { border: none; cursor: pointer; }
+
+/* ── TOAST ───────────────────────────────────────────────────── */
+#toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  padding: 14px 24px;
+  border-radius: 10px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: #fff;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 9999;
+  white-space: nowrap;
+}
+#toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+#toast.success { background: #1D3557; }
+#toast.error   { background: #E8643A; }
 
 .contact-ornament {
   margin-top: 80px;
@@ -829,15 +855,17 @@ footer {
   </div>
 </section>
 
+<div id="toast"></div>
+
 <!-- ── CONTACT ─────────────────────────────────────────────── -->
 <section class="contact" id="contact">
   <div class="section-label reveal-up">Start a Conversation</div>
   <h2 class="section-heading reveal-up" style="margin-bottom:16px;">Let's Build Something<br/>That Lasts</h2>
   <p class="contact-sub reveal-up">Whether you have a product idea, a problem to solve, or just a vision — we would love to hear from you.</p>
-  <div class="contact-form reveal-up">
-    <input type="email" placeholder="Your email address" />
-    <a href="mailto:hello@nexkind.com" class="btn-primary">Get In Touch</a>
-  </div>
+  <form id="contact-form" class="contact-form reveal-up">
+    <input type="email" name="email" placeholder="Your email address" required />
+    <button type="submit" class="btn-primary">Get In Touch</button>
+  </form>
 
   <!-- Decorative logo mark at bottom -->
   <div class="contact-ornament">
@@ -978,6 +1006,42 @@ style.textContent = `
   .reveal-service.visible { opacity: 1 !important; transform: none !important; }
 `;
 document.head.appendChild(style);
+
+/* ── WEB3FORMS ───────────────────────────────────────────── */
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show ' + type;
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.className = ''; }, 4000);
+}
+
+document.getElementById('contact-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn = this.querySelector('button[type="submit"]');
+  const email = this.email.value;
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+  try {
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ access_key: '9f532d89-9882-4623-80f9-5718fa87f017', email })
+    });
+    const data = await res.json();
+    if (data.success) {
+      showToast('Message sent! We\'ll be in touch soon.', 'success');
+      this.reset();
+    } else {
+      showToast(data.message || 'Something went wrong. Please try again.', 'error');
+    }
+  } catch {
+    showToast('Network error. Please check your connection.', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Get In Touch';
+  }
+});
 </script>
 </body>
 </html>
