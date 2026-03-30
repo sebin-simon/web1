@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>nexKind — Vision Beyond the Horizon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet" />
+<style>
+/* ── RESET & BASE ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy:   #1D3557;
+  --coral:  #E8643A;
+  --cream:  #F8F5F0;
+  --gray:   #7A8499;
+  --light:  #EEE9E2;
+  --white:  #FFFFFF;
+  --navy2:  #162840;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--cream);
+  color: var(--navy);
+  overflow-x: hidden;
+}
+
+/* ── NAVBAR ───────────────────────────────────────────────────── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 0 5%;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.4s, box-shadow 0.4s;
+}
+nav.scrolled {
+  background: var(--navy);
+  box-shadow: 0 2px 24px rgba(0,0,0,0.18);
+}
+
+/* Logo — always visible */
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+.nav-logo svg { width: 38px; height: 38px; flex-shrink: 0; }
+.nav-logo-text {
+  font-family: 'Outfit', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: -0.5px;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.4);
+  line-height: 1;
+}
+.nav-logo-text span { font-weight: 300; }
+
+.nav-links { display: flex; gap: 32px; list-style: none; }
+.nav-links a {
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--white);
+  opacity: 0.85;
+  transition: opacity 0.2s;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+.nav-links a:hover { opacity: 1; }
+.nav-cta {
+  background: var(--coral);
+  color: var(--white) !important;
+  opacity: 1 !important;
+  padding: 8px 20px;
+  border-radius: 6px;
+  text-shadow: none !important;
+  font-weight: 600 !important;
+}
+
+/* ── HERO ─────────────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  height: 100vh;
+  min-height: 640px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--navy2);
+}
+
+/* Animated dot field canvas */
+#dot-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  opacity: 0.5;
+}
+
+/* Geometric SVG background shapes */
+.hero-bg-shapes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 5%;
+  max-width: 860px;
+}
+.hero-eyebrow {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--coral);
+  margin-bottom: 24px;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.2s forwards;
+}
+.hero-heading {
+  font-size: clamp(42px, 7vw, 86px);
+  font-weight: 900;
+  color: var(--white);
+  line-height: 1.05;
+  letter-spacing: -2px;
+  margin-bottom: 24px;
+}
+.hero-heading .word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(40px);
+  animation: fadeUp 0.7s forwards;
+}
+.hero-sub {
+  font-size: clamp(16px, 2.2vw, 20px);
+  font-weight: 300;
+  color: rgba(255,255,255,0.72);
+  max-width: 600px;
+  margin: 0 auto 40px;
+  line-height: 1.7;
+  opacity: 0;
+  animation: fadeUp 0.8s 1.2s forwards;
+}
+.hero-btns {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeUp 0.8s 1.5s forwards;
+}
+.btn-primary {
+  background: var(--coral);
+  color: var(--white);
+  border: none;
+  padding: 14px 32px;
+  border-radius: 8px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: inline-block;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(232,100,58,0.4); }
+.btn-ghost {
+  background: transparent;
+  color: var(--white);
+  border: 2px solid rgba(255,255,255,0.4);
+  padding: 14px 32px;
+  border-radius: 8px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 0.2s, background 0.2s;
+  display: inline-block;
+}
+.btn-ghost:hover { border-color: var(--white); background: rgba(255,255,255,0.08); }
+
+/* Scroll indicator */
+.scroll-hint {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255,255,255,0.4);
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  animation: fadeUp 1s 2s forwards;
+  opacity: 0;
+}
+.scroll-hint::after {
+  content: '';
+  width: 1px;
+  height: 48px;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.4), transparent);
+  animation: scrollLine 1.8s ease-in-out infinite;
+}
+@keyframes scrollLine {
+  0% { transform: scaleY(0); transform-origin: top; }
+  50% { transform: scaleY(1); transform-origin: top; }
+  51% { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+
+/* ── MISSION STRIP ────────────────────────────────────────────── */
+.mission-strip {
+  background: var(--coral);
+  padding: 36px 5%;
+  text-align: center;
+  overflow: hidden;
+}
+.mission-strip p {
+  font-size: clamp(18px, 3vw, 28px);
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: -0.5px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.7s ease;
+}
+.mission-strip p.visible { opacity: 1; transform: none; }
+
+/* ── SECTION BASE ─────────────────────────────────────────────── */
+section { padding: 120px 5%; }
+.section-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--coral);
+  margin-bottom: 16px;
+}
+.section-heading {
+  font-size: clamp(32px, 4.5vw, 54px);
+  font-weight: 800;
+  color: var(--navy);
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+}
+
+/* ── ABOUT ────────────────────────────────────────────────────── */
+.about {
+  background: var(--white);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+.about-left {
+  opacity: 0;
+  transform: translateX(-40px);
+  transition: all 0.9s ease;
+}
+.about-left.visible { opacity: 1; transform: none; }
+.about-pullquote {
+  font-family: 'Lora', serif;
+  font-style: italic;
+  font-size: clamp(24px, 3vw, 36px);
+  color: var(--navy);
+  line-height: 1.4;
+  border-left: 4px solid var(--coral);
+  padding-left: 28px;
+  margin-top: 24px;
+}
+.about-right {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.9s ease 0.2s;
+}
+.about-right.visible { opacity: 1; transform: none; }
+.about-right p {
+  font-size: 17px;
+  line-height: 1.8;
+  color: #4a5568;
+  margin-bottom: 20px;
+  font-weight: 300;
+}
+
+/* About visual element */
+.about-visual {
+  margin-top: 48px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.about-pill {
+  background: var(--cream);
+  border: 1.5px solid var(--light);
+  border-radius: 100px;
+  padding: 8px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--navy);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.about-pill span { font-size: 16px; }
+
+/* ── VALUES ───────────────────────────────────────────────────── */
+.values {
+  background: var(--cream);
+}
+.values-header { text-align: center; margin-bottom: 64px; }
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.value-card {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 36px 28px;
+  border: 1.5px solid var(--light);
+  opacity: 0;
+  transform: translateY(30px) scale(0.97);
+  transition: all 0.6s ease;
+  position: relative;
+  overflow: hidden;
+}
+.value-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--coral);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+.value-card:hover::before { transform: scaleX(1); }
+.value-card:hover { box-shadow: 0 12px 40px rgba(29,53,87,0.1); transform: translateY(-4px) scale(1); }
+.value-card.visible { opacity: 1; transform: translateY(0) scale(1); }
+.value-icon { font-size: 32px; margin-bottom: 16px; }
+.value-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 10px;
+}
+.value-desc {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--gray);
+  font-weight: 300;
+}
+
+/* ── SERVICES ─────────────────────────────────────────────────── */
+.services { background: var(--navy); padding: 120px 0; }
+.services-inner { padding: 0 5%; }
+.services-header { text-align: center; margin-bottom: 80px; }
+.services-header .section-label { color: var(--coral); }
+.services-header .section-heading { color: var(--white); }
+
+.service-block {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  min-height: 400px;
+  margin-bottom: 4px;
+  overflow: hidden;
+}
+.service-block:last-child { margin-bottom: 0; }
+.service-block.reverse { direction: rtl; }
+.service-block.reverse > * { direction: ltr; }
+
+.service-visual {
+  position: relative;
+  overflow: hidden;
+  min-height: 360px;
+}
+
+/* Each service gets a unique abstract CSS background */
+.sv-1 {
+  background: linear-gradient(135deg, #E8643A 0%, #c0392b 100%);
+}
+.sv-2 {
+  background: linear-gradient(135deg, #162840 0%, #1D3557 60%, #2a5298 100%);
+}
+.sv-3 {
+  background: linear-gradient(135deg, #2d6a4f 0%, #1B4332 100%);
+}
+.sv-4 {
+  background: linear-gradient(135deg, #6d28d9 0%, #1D3557 100%);
+}
+
+/* Decorative SVG pattern inside each service visual */
+.service-visual-inner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.service-visual svg {
+  width: 65%;
+  height: 65%;
+  opacity: 0.18;
+}
+
+/* Service number watermark */
+.service-num {
+  position: absolute;
+  bottom: 24px;
+  right: 28px;
+  font-size: 96px;
+  font-weight: 900;
+  color: rgba(255,255,255,0.1);
+  line-height: 1;
+  font-family: 'Outfit', sans-serif;
+}
+
+.service-content {
+  background: rgba(255,255,255,0.04);
+  padding: 60px 52px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid rgba(255,255,255,0.06);
+  opacity: 0;
+  transform: translateX(30px);
+  transition: all 0.8s ease;
+}
+.service-block.reverse .service-content {
+  transform: translateX(-30px);
+}
+.service-content.visible { opacity: 1; transform: none; }
+.service-tag {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--coral);
+  margin-bottom: 16px;
+}
+.service-title {
+  font-size: clamp(22px, 2.8vw, 32px);
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 16px;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+}
+.service-desc {
+  font-size: 16px;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.6);
+  font-weight: 300;
+  max-width: 420px;
+}
+
+/* ── CONTACT ──────────────────────────────────────────────────── */
+.contact {
+  background: var(--cream);
+  text-align: center;
+  padding: 140px 5%;
+  position: relative;
+  overflow: hidden;
+}
+.contact::before {
+  content: '';
+  position: absolute;
+  top: -200px; left: 50%;
+  transform: translateX(-50%);
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(232,100,58,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.contact .section-heading { margin-bottom: 16px; }
+.contact-sub {
+  font-size: 18px;
+  font-weight: 300;
+  color: var(--gray);
+  max-width: 520px;
+  margin: 0 auto 48px;
+  line-height: 1.7;
+}
+.contact-form {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  max-width: 520px;
+  margin: 0 auto;
+}
+.contact-form input {
+  flex: 1;
+  min-width: 240px;
+  padding: 14px 20px;
+  border: 2px solid var(--light);
+  border-radius: 8px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  color: var(--navy);
+  background: var(--white);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.contact-form input:focus { border-color: var(--coral); }
+.contact-form input::placeholder { color: var(--gray); }
+
+.contact-ornament {
+  margin-top: 80px;
+  opacity: 0.12;
+}
+
+/* ── FOOTER ───────────────────────────────────────────────────── */
+footer {
+  background: var(--navy2);
+  padding: 48px 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.footer-logo svg { width: 32px; height: 32px; }
+.footer-logo-text {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--white);
+}
+.footer-logo-text span { font-weight: 300; }
+.footer-tagline {
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+  margin-top: 2px;
+  letter-spacing: 1px;
+}
+.footer-links {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+}
+.footer-links a {
+  text-decoration: none;
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--white); }
+.footer-copy {
+  font-size: 13px;
+  color: rgba(255,255,255,0.3);
+}
+
+/* ── ANIMATIONS ───────────────────────────────────────────────── */
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── RESPONSIVE ───────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .about { grid-template-columns: 1fr; gap: 40px; }
+  .values-grid { grid-template-columns: 1fr 1fr; }
+  .service-block, .service-block.reverse { grid-template-columns: 1fr; direction: ltr; }
+  .service-visual { min-height: 220px; }
+  .nav-links { display: none; }
+}
+@media (max-width: 600px) {
+  .values-grid { grid-template-columns: 1fr; }
+  footer { flex-direction: column; text-align: center; }
+  .footer-links { flex-wrap: wrap; justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAVBAR ──────────────────────────────────────────────── -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">
+    <!-- Inline logo SVG — always white, always visible -->
+    <svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
+      <!-- Sun arc -->
+      <path d="M 14 38 A 26 26 0 0 1 66 38" fill="none" stroke="#E8643A" stroke-width="7" stroke-linecap="round"/>
+      <!-- Horizon band -->
+      <path d="M 4 40 Q 40 30 76 40" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="4" stroke-linecap="round"/>
+      <!-- S-curve trend line -->
+      <path d="M 14 52 C 22 52, 28 28, 40 28 S 58 22, 66 22" fill="none" stroke="#E8643A" stroke-width="3" stroke-linecap="round"/>
+      <!-- Endpoint dots -->
+      <circle cx="14" cy="52" r="4.5" fill="#E8643A"/>
+      <circle cx="14" cy="52" r="1.8" fill="white"/>
+      <circle cx="66" cy="22" r="4.5" fill="#E8643A"/>
+      <circle cx="66" cy="22" r="1.8" fill="white"/>
+    </svg>
+    <div>
+      <div class="nav-logo-text"><span>nex</span>Kind</div>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#values">Values</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#contact" class="nav-cta">Get In Touch</a></li>
+  </ul>
+</nav>
+
+<!-- ── HERO ────────────────────────────────────────────────── -->
+<section class="hero" id="hero">
+  <canvas id="dot-canvas"></canvas>
+
+  <!-- Abstract geometric shapes -->
+  <svg class="hero-bg-shapes" viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+    <!-- Large sun arc, very subtle -->
+    <path d="M 420 900 A 480 480 0 0 1 1020 900" fill="none" stroke="rgba(232,100,58,0.12)" stroke-width="80"/>
+    <!-- Horizon sweep -->
+    <path d="M -100 560 Q 720 400 1540 560" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="60"/>
+    <!-- S-curve large -->
+    <path d="M 100 780 C 280 780, 380 380, 600 380 S 900 300, 1100 280" fill="none" stroke="rgba(232,100,58,0.07)" stroke-width="4"/>
+    <!-- Grid dots -->
+    <circle cx="200" cy="200" r="2" fill="rgba(255,255,255,0.15)"/>
+    <circle cx="400" cy="150" r="1.5" fill="rgba(255,255,255,0.1)"/>
+    <circle cx="1200" cy="250" r="2" fill="rgba(255,255,255,0.12)"/>
+    <circle cx="1100" cy="420" r="1.5" fill="rgba(255,255,255,0.08)"/>
+    <circle cx="300" cy="480" r="2" fill="rgba(255,255,255,0.1)"/>
+    <circle cx="800" cy="180" r="2" fill="rgba(232,100,58,0.3)"/>
+    <circle cx="640" cy="320" r="1.5" fill="rgba(232,100,58,0.2)"/>
+  </svg>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">Advanced Applications & Engineering</div>
+    <h1 class="hero-heading" id="hero-heading"></h1>
+    <p class="hero-sub">We build technology that thinks ahead — engineered for progress, designed for people.</p>
+    <div class="hero-btns">
+      <a href="#services" class="btn-primary">Explore Our Work</a>
+      <a href="#about" class="btn-ghost">Our Story</a>
+    </div>
+  </div>
+
+  <div class="scroll-hint">Scroll</div>
+</section>
+
+<!-- ── MISSION STRIP ───────────────────────────────────────── -->
+<div class="mission-strip">
+  <p class="reveal-strip">Future-Proof Solutions.&nbsp;&nbsp;Human-First Philosophy.</p>
+</div>
+
+<!-- ── ABOUT ───────────────────────────────────────────────── -->
+<section class="about" id="about">
+  <div class="about-left reveal-left">
+    <div class="section-label">About nexKind</div>
+    <blockquote class="about-pullquote">
+      "We believe the most powerful technology is the kind that feels human."
+    </blockquote>
+    <div class="about-visual">
+      <div class="about-pill"><span>🌅</span> Vision-driven</div>
+      <div class="about-pill"><span>🤝</span> Human-centered</div>
+      <div class="about-pill"><span>⚡</span> Future-proof</div>
+      <div class="about-pill"><span>💡</span> Built to last</div>
+    </div>
+  </div>
+  <div class="about-right reveal-up">
+    <div class="section-label">Our Story</div>
+    <h2 class="section-heading" style="margin-bottom:32px;">Where Engineering<br/>Meets Empathy</h2>
+    <p>nexKind was founded on a simple belief: that the future belongs to those who build it with both intelligence and heart. We combine advanced engineering with a deep commitment to the people our technology serves.</p>
+    <p>Our team brings together expertise in AI, mobile, and web engineering — united by a shared mission to create solutions that are not just powerful, but purposeful. We believe compassion and precision are not opposites — they are partners.</p>
+    <p>Every product we build is designed to outlast trends, adapt to change, and remain deeply relevant to the humans who depend on it. That is not just our promise — it is our practice.</p>
+  </div>
+</section>
+
+<!-- ── VALUES ──────────────────────────────────────────────── -->
+<section class="values" id="values">
+  <div class="values-header">
+    <div class="section-label">What We Stand For</div>
+    <h2 class="section-heading">Principles That<br/>Guide Everything</h2>
+  </div>
+  <div class="values-grid">
+    <div class="value-card reveal-card" style="--d:0ms">
+      <div class="value-icon">🌅</div>
+      <div class="value-title">Vision</div>
+      <div class="value-desc">We look beyond what exists today to design what should exist tomorrow. Every decision starts with where we are going, not just where we are.</div>
+    </div>
+    <div class="value-card reveal-card" style="--d:100ms">
+      <div class="value-icon">🤝</div>
+      <div class="value-title">Compassion</div>
+      <div class="value-desc">Technology without empathy is just noise. We build tools that genuinely care about the people using them — designed with warmth, not just efficiency.</div>
+    </div>
+    <div class="value-card reveal-card" style="--d:200ms">
+      <div class="value-icon">⚡</div>
+      <div class="value-title">Precision</div>
+      <div class="value-desc">Every line of code, every design decision — crafted with intent and engineered to last. Quality is not a phase; it is the foundation.</div>
+    </div>
+    <div class="value-card reveal-card" style="--d:300ms">
+      <div class="value-icon">🌍</div>
+      <div class="value-title">Humanity</div>
+      <div class="value-desc">Our north star is always the human on the other side of the screen. We build for real people, with real needs, in a real world.</div>
+    </div>
+    <div class="value-card reveal-card" style="--d:400ms">
+      <div class="value-icon">🔮</div>
+      <div class="value-title">Foresight</div>
+      <div class="value-desc">We anticipate tomorrow's challenges and solve them today — so our clients are never caught off guard by the pace of change.</div>
+    </div>
+    <div class="value-card reveal-card" style="--d:500ms">
+      <div class="value-icon">💡</div>
+      <div class="value-title">Innovation</div>
+      <div class="value-desc">We don't follow trends. We build what comes after them — crafting solutions that define the next chapter, not just respond to the last one.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SERVICES ────────────────────────────────────────────── -->
+<section class="services" id="services">
+  <div class="services-inner">
+    <div class="services-header">
+      <div class="section-label">What We Do</div>
+      <h2 class="section-heading">Built for the Future.<br/>Delivered Today.</h2>
+    </div>
+  </div>
+
+  <!-- Service 1 -->
+  <div class="service-block">
+    <div class="service-visual sv-1">
+      <div class="service-visual-inner">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" fill="none">
+          <rect x="20" y="40" width="160" height="120" rx="8" stroke="white" stroke-width="4"/>
+          <line x1="20" y1="70" x2="180" y2="70" stroke="white" stroke-width="4"/>
+          <circle cx="40" cy="55" r="5" fill="white"/>
+          <circle cx="60" cy="55" r="5" fill="white"/>
+          <circle cx="80" cy="55" r="5" fill="white"/>
+          <path d="M 40 130 L 70 110 L 100 120 L 130 95 L 160 80" stroke="white" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="40" cy="130" r="4" fill="white"/>
+          <circle cx="160" cy="80" r="4" fill="white"/>
+        </svg>
+      </div>
+      <div class="service-num">01</div>
+    </div>
+    <div class="service-content reveal-service">
+      <div class="service-tag">Core Capability</div>
+      <h3 class="service-title">Advanced Application Engineering</h3>
+      <p class="service-desc">We design and build mobile and web applications that are fast, scalable, and built to evolve. From architecture to launch — we engineer products that endure beyond the moment they are released.</p>
+    </div>
+  </div>
+
+  <!-- Service 2 -->
+  <div class="service-block reverse">
+    <div class="service-visual sv-2">
+      <div class="service-visual-inner">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" fill="none">
+          <circle cx="100" cy="100" r="60" stroke="white" stroke-width="4"/>
+          <circle cx="100" cy="100" r="35" stroke="white" stroke-width="3"/>
+          <circle cx="100" cy="100" r="10" fill="white"/>
+          <line x1="100" y1="40" x2="100" y2="20" stroke="white" stroke-width="3"/>
+          <line x1="100" y1="160" x2="100" y2="180" stroke="white" stroke-width="3"/>
+          <line x1="40" y1="100" x2="20" y2="100" stroke="white" stroke-width="3"/>
+          <line x1="160" y1="100" x2="180" y2="100" stroke="white" stroke-width="3"/>
+          <circle cx="100" cy="20" r="4" fill="white"/>
+          <circle cx="100" cy="180" r="4" fill="white"/>
+          <circle cx="20" cy="100" r="4" fill="white"/>
+          <circle cx="180" cy="100" r="4" fill="white"/>
+        </svg>
+      </div>
+      <div class="service-num">02</div>
+    </div>
+    <div class="service-content reveal-service">
+      <div class="service-tag">Intelligence Layer</div>
+      <h3 class="service-title">AI-Powered Solutions</h3>
+      <p class="service-desc">We integrate intelligent systems that learn, adapt, and deliver. Our approach brings the power of AI to products that feel intuitive and human — not intimidating or opaque.</p>
+    </div>
+  </div>
+
+  <!-- Service 3 -->
+  <div class="service-block">
+    <div class="service-visual sv-3">
+      <div class="service-visual-inner">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" fill="none">
+          <rect x="30" y="30" width="140" height="100" rx="12" stroke="white" stroke-width="4"/>
+          <rect x="75" y="130" width="50" height="20" stroke="white" stroke-width="3"/>
+          <line x1="50" y1="150" x2="150" y2="150" stroke="white" stroke-width="3"/>
+          <circle cx="100" cy="80" r="22" stroke="white" stroke-width="3"/>
+          <path d="M 88 80 L 96 88 L 114 70" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="service-num">03</div>
+    </div>
+    <div class="service-content reveal-service">
+      <div class="service-tag">Design Philosophy</div>
+      <h3 class="service-title">Human Experience Design</h3>
+      <p class="service-desc">Great technology disappears into the experience. We craft interfaces that feel effortless — because the best design is the kind you never notice. It simply works, beautifully.</p>
+    </div>
+  </div>
+
+  <!-- Service 4 -->
+  <div class="service-block reverse">
+    <div class="service-visual sv-4">
+      <div class="service-visual-inner">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" fill="none">
+          <path d="M 40 160 L 40 100 L 80 80 L 120 110 L 160 50" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="40" cy="160" r="5" fill="white"/>
+          <circle cx="80" cy="80" r="5" fill="white"/>
+          <circle cx="120" cy="110" r="5" fill="white"/>
+          <circle cx="160" cy="50" r="5" fill="white"/>
+          <path d="M 145 50 L 160 50 L 160 65" stroke="white" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="service-num">04</div>
+    </div>
+    <div class="service-content reveal-service">
+      <div class="service-tag">Strategic Advisory</div>
+      <h3 class="service-title">Future-Proof Consulting</h3>
+      <p class="service-desc">We help organizations navigate technological change with clarity and confidence — building strategies that stay relevant for years, not quarters. The future is uncertain; your foundation doesn't have to be.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ─────────────────────────────────────────────── -->
+<section class="contact" id="contact">
+  <div class="section-label reveal-up">Start a Conversation</div>
+  <h2 class="section-heading reveal-up" style="margin-bottom:16px;">Let's Build Something<br/>That Lasts</h2>
+  <p class="contact-sub reveal-up">Whether you have a product idea, a problem to solve, or just a vision — we would love to hear from you.</p>
+  <div class="contact-form reveal-up">
+    <input type="email" placeholder="Your email address" />
+    <a href="mailto:hello@nexkind.com" class="btn-primary">Get In Touch</a>
+  </div>
+
+  <!-- Decorative logo mark at bottom -->
+  <div class="contact-ornament">
+    <svg width="180" height="120" viewBox="0 0 180 120" xmlns="http://www.w3.org/2000/svg">
+      <path d="M 30 80 A 60 60 0 0 1 150 80" fill="none" stroke="#1D3557" stroke-width="16" stroke-linecap="round"/>
+      <path d="M 10 85 Q 90 55 170 85" fill="none" stroke="#1D3557" stroke-width="10" stroke-linecap="round"/>
+      <path d="M 30 108 C 50 108, 65 58, 90 58 S 130 44, 150 44" fill="none" stroke="#E8643A" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="30" cy="108" r="7" fill="#E8643A"/>
+      <circle cx="30" cy="108" r="2.5" fill="white"/>
+      <circle cx="150" cy="44" r="7" fill="#E8643A"/>
+      <circle cx="150" cy="44" r="2.5" fill="white"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ── FOOTER ──────────────────────────────────────────────── -->
+<footer>
+  <div class="footer-logo">
+    <svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
+      <path d="M 14 38 A 26 26 0 0 1 66 38" fill="none" stroke="#E8643A" stroke-width="7" stroke-linecap="round"/>
+      <path d="M 4 40 Q 40 30 76 40" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="4" stroke-linecap="round"/>
+      <path d="M 14 52 C 22 52, 28 28, 40 28 S 58 22, 66 22" fill="none" stroke="#E8643A" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="14" cy="52" r="4.5" fill="#E8643A"/>
+      <circle cx="14" cy="52" r="1.8" fill="white"/>
+      <circle cx="66" cy="22" r="4.5" fill="#E8643A"/>
+      <circle cx="66" cy="22" r="1.8" fill="white"/>
+    </svg>
+    <div>
+      <div class="footer-logo-text"><span>nex</span>Kind</div>
+      <div class="footer-tagline">Vision Beyond the Horizon</div>
+    </div>
+  </div>
+  <ul class="footer-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#values">Values</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="footer-copy">© 2025 nexKind. Advanced Applications & Engineering.</div>
+</footer>
+
+<script>
+/* ── DOT CANVAS ─────────────────────────────────────────── */
+const canvas = document.getElementById('dot-canvas');
+const ctx = canvas.getContext('2d');
+let dots = [];
+
+function resizeCanvas() {
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', () => { resizeCanvas(); initDots(); });
+
+function initDots() {
+  dots = [];
+  const count = Math.floor((canvas.width * canvas.height) / 14000);
+  for (let i = 0; i < count; i++) {
+    dots.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.5 + 0.5,
+      a: Math.random() * Math.PI * 2,
+      speed: Math.random() * 0.003 + 0.001,
+      opacity: Math.random() * 0.5 + 0.1
+    });
+  }
+}
+initDots();
+
+let parallaxY = 0;
+window.addEventListener('scroll', () => { parallaxY = window.scrollY; });
+
+function animateDots() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  dots.forEach(d => {
+    d.a += d.speed;
+    const x = d.x + Math.sin(d.a) * 12;
+    const y = d.y + Math.cos(d.a * 0.7) * 8 - parallaxY * 0.08;
+    ctx.beginPath();
+    ctx.arc(x, y, d.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,255,255,${d.opacity})`;
+    ctx.fill();
+  });
+  requestAnimationFrame(animateDots);
+}
+animateDots();
+
+/* ── HERO HEADING WORD ANIMATION ───────────────────────── */
+const words = ['Vision', 'Beyond', 'the', 'Horizon'];
+const heading = document.getElementById('hero-heading');
+words.forEach((w, i) => {
+  const span = document.createElement('span');
+  span.className = 'word';
+  span.textContent = w + (i < words.length - 1 ? '\u00a0' : '');
+  span.style.animationDelay = (0.4 + i * 0.12) + 's';
+  heading.appendChild(span);
+});
+
+/* ── NAVBAR SCROLL ──────────────────────────────────────── */
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+/* ── INTERSECTION OBSERVER ──────────────────────────────── */
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      // Staggered cards
+      if (e.target.classList.contains('reveal-card')) {
+        setTimeout(() => e.target.classList.add('visible'),
+          parseInt(getComputedStyle(e.target).getPropertyValue('--d')) || 0);
+      } else {
+        e.target.classList.add('visible');
+      }
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.reveal-left, .reveal-up, .reveal-card, .reveal-service, .reveal-strip').forEach(el => {
+  io.observe(el);
+});
+
+/* Apply same visible class logic for non-card elements */
+// reveal-up elements
+document.querySelectorAll('.reveal-up').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(30px)';
+  el.style.transition = 'all 0.7s ease';
+});
+// Override via .visible
+const style = document.createElement('style');
+style.textContent = `
+  .reveal-up.visible { opacity: 1 !important; transform: none !important; }
+  .reveal-left.visible { opacity: 1 !important; transform: none !important; }
+  .reveal-service.visible { opacity: 1 !important; transform: none !important; }
+`;
+document.head.appendChild(style);
+</script>
+</body>
+</html>
